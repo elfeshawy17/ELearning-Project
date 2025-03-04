@@ -15,5 +15,5 @@ userRouter.route('/')
 
 userRouter.route('/:id')
             .put(allowedTo('admin'), userController.updateUser)
-            .delete(allowedTo('professor'), userController.deleteUser)
+            .delete(allowedTo('admin'), userController.deleteUser)
 
