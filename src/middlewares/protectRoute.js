@@ -5,7 +5,7 @@ import HttpText from "../../utils/HttpText.js";
 
 export const protectRoute = async (req, res, next) => {
 
-    const token = req.headers('Authorization')?.replace('Bearer ', '');
+    const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
         const error = AppError.create("Access denied. No token provided.", 400, HttpText.FAIL);
