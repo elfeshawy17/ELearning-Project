@@ -22,7 +22,13 @@ const assignmentSchema =new Schema({
     }]
 },{
     timestamps:true,
-    versionKey:false
+    versionKey:false  
 })
+
+assignmentSchema.pre(/^find/,function(){
+    this.populate("submissions")
+    this.populate("course","title")
+})
+
 
 export const Assignment=model("Assignment",assignmentSchema)

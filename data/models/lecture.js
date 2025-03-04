@@ -28,4 +28,8 @@ const lectureSchema= new Schema({
     versionKey:false
 })
 
+lectureSchema.pre(/^find/,function(){
+    this.populate("course","title")
+})
+
 export const Lecture =model("Lecture",lectureSchema)

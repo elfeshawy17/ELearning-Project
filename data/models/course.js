@@ -32,4 +32,11 @@ const courseSchema= new Schema({
     versionKey:false
 })
 
+courseSchema.pre(/^find/,function(){
+    this.populate("professor","name")
+    this.populate("lecture","title")
+    this.populate("student","name")
+    this.populate("assignment","title")
+})
+
 export const Course =model("Course",courseSchema)

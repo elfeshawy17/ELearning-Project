@@ -22,7 +22,12 @@ export const addCourse =asyncErrorHandler(async(req,res,next)=>{
 
 export const getAllCourses=asyncErrorHandler(async(req,res,next)=>{
 
-    let courses=await Course.find()
+    let pageNumber =req.query.page *1 || 1
+    if(pageNumber<1)pageNumber=1
+    let limit =4
+    const skip =(parseInt(pageNumber-1))*limit
+
+    let courses=await Course.find().skip(skip).limit(limit)
 
     res.status(201).json({status:HttpText.SUCCESS,data:courses})
 })
