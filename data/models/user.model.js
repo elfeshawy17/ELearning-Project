@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
+    department: {
+        type: String,
+        required: true
+    },
     role: {
         type: String,
         enum: ['student', 'professor', 'admin'],
