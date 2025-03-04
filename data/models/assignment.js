@@ -11,6 +11,9 @@ const assignmentSchema =new Schema({
         required:true,
         trim:true
     },
+    fileUrl:{
+        tyoe:String
+    },
     duedate:{
         type:Date,
         required:true

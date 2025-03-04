@@ -12,12 +12,9 @@ const lectureSchema= new Schema({
         required:true,
         trim:true
     },
-    content:{
+    fileUrl:{
         type:String,
         required:true,
-    },
-    videoUrl:{
-        type:String
     },
     order:{
         type:Number,

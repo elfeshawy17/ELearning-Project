@@ -15,9 +15,9 @@ app.use(cors());
 app.use(express.json());
 
 
-app.use("/courses",courseRouter)
-app.use("/lectures",lectureRouter)
-app.use("/assignments",assignmentRouter)
+app.use("/course",courseRouter)
+app.use("/lecture",lectureRouter)
+app.use("/assignment",assignmentRouter)
 
 
 

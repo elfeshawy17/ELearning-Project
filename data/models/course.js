@@ -15,18 +15,18 @@ const courseSchema= new Schema({
         type: String,
         required: true
     },
-    lecture:{
+    lecture:[{
         type:Schema.Types.ObjectId,
         ref:"Lecture",
-    },
-    student:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-    },
-    assignment:{
+    }],
+    students: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    }],
+    assignment:[{
         type:Schema.Types.ObjectId,
         ref:"Assignment"
-    }
+    }]
 },{
     timestamps:true,
     versionKey:false
