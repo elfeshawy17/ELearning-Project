@@ -17,21 +17,15 @@ const assignmentSchema =new Schema({
     duedate:{
         type:Date,
         required:true
-    },
-    submissions: [{
-        student: { type:Schema.Types.ObjectId, ref: 'User' },
-        fileUrl: { type: String },
-        submittedAt: { type: Date, default: Date.now }
-    }]
+    }
 },{
     timestamps:true,
     versionKey:false  
 })
 
 assignmentSchema.pre(/^find/,function(){
-    this.populate("submissions")
     this.populate("course","title")
-})
+});
 
 
-export const Assignment=model("Assignment",assignmentSchema)
+export const Assignment = model("Assignment",assignmentSchema);

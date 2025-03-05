@@ -8,7 +8,7 @@ import { authRouter } from './src/modules/auth/auth.routes.js';
 import courseRouter from './src/modules/courses/courses.routes.js';
 import lectureRouter from './src/modules/lectures/lecture.routes.js';
 import assignmentRouter from './src/modules/assignments/assignment.routes.js';
-
+import { submissionRouter } from './src/modules/submission/submission.routes.js';
 
 
 const app = express();
@@ -22,6 +22,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/course', courseRouter)
 app.use('/api/lecture', lectureRouter)
 app.use('/api/assignment', assignmentRouter)
+app.use('/api/submission', submissionRouter)
 
 
 
