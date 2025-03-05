@@ -17,13 +17,11 @@ const port = process.env.SERVER_PORT;
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/user', userRouter);
-
+app.use('/api/user', userRouter)
 app.use('/api/auth', authRouter)
-
-app.use("/course",courseRouter)
-app.use("/lecture",lectureRouter)
-app.use("/assignment",assignmentRouter)
+app.use('/api/course', courseRouter)
+app.use('/api/lecture', lectureRouter)
+app.use('/api/assignment', assignmentRouter)
 
 
 
