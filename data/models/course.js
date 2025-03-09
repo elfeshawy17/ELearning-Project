@@ -35,7 +35,7 @@ const courseSchema= new Schema({
 courseSchema.pre(/^find/,function(){
     this.populate("professor","name")
     this.populate("lecture","title")
-    this.populate("student","name")
+    this.populate("students","name")
     this.populate("assignment","title")
 })
 
