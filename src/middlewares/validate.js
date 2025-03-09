@@ -6,11 +6,11 @@ export const validate = (schema) => {
 
     return (req, res, next) => {
 
-        const {error} = schema.validate({...req.body, ...req.params, ...req.query}, {abortEarly: false});
-        if (!error) {
+        const {err} = schema.validate({...req.body, ...req.params, ...req.query}, {abortEarly: false});
+        if (!err) {
             next();
         } else {
-            let errorMessage = error.details.map( (err) => {
+            let errorMessage = err.details.map( (err) => {
                 return err.message;
             });
             const error = AppError.create(errorMessage, 400, HttpText.FAIL);
