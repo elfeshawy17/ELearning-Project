@@ -12,7 +12,7 @@ const assignmentSchema =new Schema({
         trim:true
     },
     fileUrl:{
-        tyoe:String
+        type:String
     },
     duedate:{
         type:Date,

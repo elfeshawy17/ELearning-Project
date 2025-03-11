@@ -7,8 +7,9 @@ import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js";
 const addSubmission = asyncErrorHandler(
     async (req, res, next) => {
 
-        const {assignment, fileUrl} = req.body;
+        const {assignment} = req.body;
 
+        const fileUrl = req.file.path;
         const submission = new Submission({
             student: req.user._id,
             assignment,

@@ -5,20 +5,26 @@ import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js"
 
 
 
-export const addAssignment=asyncErrorHandler(async(req,res,next)=>{
-    let exists =await Assignment.findOne({title:req.body.title})
+export const addAssignment = asyncErrorHandler(
+    async(req,res,next)=>{
 
-    if(exists){
+        let exists =await Assignment.findOne({title:req.body.title})
 
-        const error=AppError.create("Assignment already exist",400,HttpText.FAIL)
-        return next(error)
-    }
+        if(exists){
+            const error=AppError.create("Assignment already exist",400,HttpText.FAIL)
+            return next(error)
+        }
 
-    let assignment=new Assignment(req.body)
-    assignment.save()
+        const fileUrl = req.file.path;
+            let assignment = new Assignment({
+                ...req.body,
+                fileUrl
+        })
+        await assignment.save()
 
-    res.status(201).json({status:HttpText.SUCCESS,data:assignment})
-})
+        res.status(201).json({status:HttpText.SUCCESS,data:assignment})
+
+});
 
 
 export const getAllAssignment=asyncErrorHandler(async(req,res,next)=>{

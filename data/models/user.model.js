@@ -45,11 +45,10 @@ const userSchema = new mongoose.Schema({
 });
 
 
-userSchema.pre('save', function(next){
-    if (this.isModified('password')){
-        this.password = bcrypt.hashSync(this.password, 8);
-    }
-    next();
+userSchema.pre('save', function(){
+
+    this.password = bcrypt.hashSync(this.password, 8);
+
 });
 
 userSchema.pre('findOneAndUpdate', function() {

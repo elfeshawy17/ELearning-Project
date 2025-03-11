@@ -13,8 +13,12 @@ export const addLecture=asyncErrorHandler(async(req,res,next)=>{
         return next(error)
     }
 
-    let lecture=new Lecture(req.body)
-    lecture.save()
+    const fileUrl = req.file.path;
+    let lecture = new Lecture({
+        ...req.body,
+        fileUrl
+    })
+    await lecture.save();
 
     res.status(201).json({status:HttpText.SUCCESS,data:lecture})
 })

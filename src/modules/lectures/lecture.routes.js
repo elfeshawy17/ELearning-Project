@@ -4,13 +4,15 @@ import { protectRoute } from "../../middlewares/protectRoute.js";
 import { allowedTo } from "../../middlewares/allowedTo.js";
 import lectureValidationSchema  from "./lecture.validate.js";
 import { createValidator } from "express-joi-validation";
+import { upload } from "../../middlewares/upload.js";
+import { validateFile } from './../../middlewares/validatePDF.js';
 
 const lectureRouter = Router();
 const validator = createValidator(); 
 
 lectureRouter.use(protectRoute, allowedTo('admin', 'professor'));
 
-lectureRouter.post("/", validator.body(lectureValidationSchema), addLecture);
+lectureRouter.post("/", upload.single('fileUrl'), validateFile, validator.body(lectureValidationSchema), addLecture);
 lectureRouter.get("/", getAllLecture);
 lectureRouter.put("/:id", updateLecture);
 lectureRouter.delete("/:id", deleteLecture);

@@ -15,7 +15,7 @@ const lectureValidationSchema = Joi.object({
             "any.required": "Title is required"
         }),
 
-    fileUrl: Joi.string().uri().required()
+    fileUrl: Joi.string()
         .messages({
             "string.uri": "File URL must be a valid URL",
             "any.required": "File URL is required"
