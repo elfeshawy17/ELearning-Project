@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addCourse, deleteCourse, getAllCourses, updateCourse } from "./courses.controller.js";
+import { addCourse, deleteCourse, getAllCourses, getSpecificCourse, updateCourse } from "./courses.controller.js";
 import { protectRoute } from "../../middlewares/protectRoute.js";
 import { allowedTo } from "../../middlewares/allowedTo.js";
 import courseValidationSchema from "./courses.validate.js";
@@ -12,6 +12,7 @@ courseRouter.use(protectRoute, allowedTo('admin', 'professor'));
 
 courseRouter.post("/", validator.body(courseValidationSchema), addCourse);
 courseRouter.get("/", getAllCourses);
+courseRouter.get("/:id", getSpecificCourse);
 courseRouter.put("/:id", updateCourse);
 courseRouter.delete("/:id", deleteCourse);
 

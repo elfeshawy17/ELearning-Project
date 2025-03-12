@@ -36,6 +36,25 @@ const getAllUsers = asyncErrorHandler(
     }
 );
 
+const getSpecificUser = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            const error = AppError.create('User is not found', 404, HttpText.FAIL);
+            return next(error); 
+        }
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: {user}
+        });
+
+    }
+);
+
+
 const updateUser = asyncErrorHandler(
     async (req, res, next) => {
 
@@ -75,6 +94,7 @@ const deleteUser = asyncErrorHandler(
 export default {
     addUser,
     getAllUsers,
+    getSpecificUser,
     updateUser,
     deleteUser
 }

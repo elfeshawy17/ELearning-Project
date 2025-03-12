@@ -36,6 +36,23 @@ export const getAllLecture=asyncErrorHandler(async(req,res,next)=>{
     res.status(201).json({status:HttpText.SUCCESS,data:lecture})
 })
 
+export const getSpecificLecture = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const lecture = await Lecture.findById(req.params.id);
+
+        if (!lecture) {
+            const error = AppError.create('Lecture is not found.', 404, HttpText.FAIL);
+            next(error);
+        }
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: {lecture}
+        });
+
+    }
+)
 
 export const updateLecture=asyncErrorHandler(async(req,res,next)=>{
     let lecture =await Lecture.findById(req.params.id)

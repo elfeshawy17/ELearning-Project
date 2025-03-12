@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addAssignment, deleteAssignment, getAllAssignment, updateAssignment } from "./assignment.controller.js";
+import { addAssignment, deleteAssignment, getAllAssignment, getSpecificAssignment, updateAssignment } from "./assignment.controller.js";
 import { protectRoute } from "../../middlewares/protectRoute.js";
 import { allowedTo } from "../../middlewares/allowedTo.js";
 import { createValidator } from "express-joi-validation";
@@ -14,6 +14,7 @@ assignmentRouter.use(protectRoute, allowedTo('admin', 'professor'));
 
 assignmentRouter.post("/", upload.single('fileUrl'), validateFile, validator.body(assignmentValidationSchema), addAssignment);
 assignmentRouter.get("/", getAllAssignment);
+assignmentRouter.get('/:id', getSpecificAssignment);
 assignmentRouter.put("/:id", updateAssignment);
 assignmentRouter.delete("/:id", deleteAssignment);
 

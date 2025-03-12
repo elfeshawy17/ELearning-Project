@@ -15,6 +15,8 @@ userRouter.route('/')
             .post(checkEmail, allowedTo('admin'), validate(userValidationSchema), userController.addUser)
             .get(allowedTo('admin'), userController.getAllUsers)
 
+userRouter.get('/:id',checkEmail, userController.getSpecificUser)
+
 userRouter.route('/:id')
             .put(allowedTo('admin'), userController.updateUser)
             .delete(allowedTo('admin'), userController.deleteUser)

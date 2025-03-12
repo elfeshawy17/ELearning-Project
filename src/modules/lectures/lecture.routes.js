@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addLecture, deleteLecture, getAllLecture, updateLecture } from "./lecture.controller.js";
+import { addLecture, deleteLecture, getAllLecture, getSpecificLecture, updateLecture } from "./lecture.controller.js";
 import { protectRoute } from "../../middlewares/protectRoute.js";
 import { allowedTo } from "../../middlewares/allowedTo.js";
 import lectureValidationSchema  from "./lecture.validate.js";
@@ -14,6 +14,7 @@ lectureRouter.use(protectRoute, allowedTo('admin', 'professor'));
 
 lectureRouter.post("/", upload.single('fileUrl'), validateFile, validator.body(lectureValidationSchema), addLecture);
 lectureRouter.get("/", getAllLecture);
+lectureRouter.get("/:id", getSpecificLecture);
 lectureRouter.put("/:id", updateLecture);
 lectureRouter.delete("/:id", deleteLecture);
 

@@ -32,6 +32,24 @@ export const getAllCourses=asyncErrorHandler(async(req,res,next)=>{
     res.status(201).json({status:HttpText.SUCCESS,data:courses})
 })
 
+export const getSpecificCourse = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const course = await Course.findById(req.params.id);
+
+        if (!assignment) {
+            const error = AppError.create('Course is not found.', 404, HttpText.FAIL);
+            next(error);
+        }
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: {course}
+        });
+
+    }
+)
+
 
 export const updateCourse=asyncErrorHandler(async(req,res,next)=>{
     let course =await Course.findById(req.params.id)
