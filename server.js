@@ -9,6 +9,8 @@ import courseRouter from './src/modules/courses/courses.routes.js';
 import lectureRouter from './src/modules/lectures/lecture.routes.js';
 import assignmentRouter from './src/modules/assignments/assignment.routes.js';
 import { submissionRouter } from './src/modules/submission/submission.routes.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerFile from './swagger-output.json' with { type: 'json' };
 
 
 const app = express();
@@ -24,7 +26,7 @@ app.use('/api/lecture', lectureRouter)
 app.use('/api/assignment', assignmentRouter)
 app.use('/api/submission', submissionRouter)
 
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { swaggerOptions: { persistAuthorization: true } }));
 
 
 app.all('*', (req, res, next) => {

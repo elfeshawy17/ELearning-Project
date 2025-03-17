@@ -13,8 +13,8 @@ const validator = createValidator();
 lectureRouter.use(protectRoute, allowedTo('admin', 'professor'));
 
 lectureRouter.post("/", upload.single('fileUrl'), validateFile, validator.body(lectureValidationSchema), addLecture);
-lectureRouter.get("/", getAllLecture);
-lectureRouter.get("/:id", getSpecificLecture);
+lectureRouter.get("/", allowedTo('admin', 'professor', 'student'), getAllLecture);
+lectureRouter.get("/:id", allowedTo('admin', 'professor', 'student'), getSpecificLecture);
 lectureRouter.put("/:id", updateLecture);
 lectureRouter.delete("/:id", deleteLecture);
 

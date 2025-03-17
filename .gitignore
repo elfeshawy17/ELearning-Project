@@ -113,3 +113,6 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+# Swagger output
+swagger-output.json
