@@ -19,12 +19,12 @@ const port = process.env.SERVER_PORT;
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/user', userRouter)
+app.use('/api/users', userRouter)
 app.use('/api/auth', authRouter)
-app.use('/api/course', courseRouter)
-app.use('/api/lecture', lectureRouter)
-app.use('/api/assignment', assignmentRouter)
-app.use('/api/submission', submissionRouter)
+app.use('/api/courses', courseRouter)
+app.use('/api/lectures', lectureRouter)
+app.use('/api/assignments', assignmentRouter)
+app.use('/api/submissions', submissionRouter)
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { swaggerOptions: { persistAuthorization: true } }));
 
