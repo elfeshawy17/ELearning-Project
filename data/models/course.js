@@ -15,6 +15,11 @@ const courseSchema= new Schema({
         type: String,
         required: true
     },
+    hours: {
+        type: Number,
+        required: true,
+        min: 1
+    },
     lecture:[{
         type:Schema.Types.ObjectId,
         ref:"Lecture",
