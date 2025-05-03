@@ -86,7 +86,7 @@ userSchema.pre('findOneAndUpdate', function() {
             return next(new Error('Level is required for students.'));
         }
         if (role !== 'student' && this._update.level !== undefined) {
-            delete this._update.level; // لو مش student، نشيل الـ level
+            delete this._update.level;
         }
     }
     if (this._update.academicId !== undefined) {

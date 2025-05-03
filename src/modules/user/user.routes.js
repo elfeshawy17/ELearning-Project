@@ -15,6 +15,8 @@ userRouter.route('/')
             .post(checkEmail, allowedTo('admin'), validate(userValidationSchema), userController.addUser)
             .get(allowedTo('admin'), userController.getAllUsers)
 
+userRouter.get('/me', allowedTo('student', 'professor', 'admin'), userController.getProfile);
+
 userRouter.get('/:id',checkEmail, allowedTo('admin'), userController.getSpecificUser)
 
 userRouter.route('/:id')
