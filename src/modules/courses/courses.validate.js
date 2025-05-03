@@ -1,7 +1,5 @@
 import Joi from "joi";
 
-
-
 const courseValidationSchema = Joi.object({
     title: Joi.string().trim().min(3).max(100).required()
         .messages({
@@ -23,6 +21,15 @@ const courseValidationSchema = Joi.object({
             "string.min": "Department name must be at least 2 characters",
             "string.max": "Department name must not exceed 50 characters",
             "any.required": "Department is required"
+        }),
+
+    hours: Joi.number().integer().min(1).max(6).required()
+        .messages({
+            "number.base": "Hours must be a number",
+            "number.integer": "Hours must be an integer",
+            "number.min": "Hours must be at least 1",
+            "number.max": "Hours must not exceed 10",
+            "any.required": "Hours is required"
         }),
 
     lecture: Joi.array().items(Joi.string()).optional()

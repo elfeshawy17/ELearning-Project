@@ -90,11 +90,37 @@ const deleteUser = asyncErrorHandler(
     }
 );
 
+const getProfile = asyncErrorHandler(
+    async (req, res, next) => {
+
+    const user = await User.findById(req.user.id).select('name email academicId department level role');
+    if (!user) {
+        const error = AppError.create('User is not found', 404, HttpText.FAIL);
+        return next(error);
+    }
+
+    const profileData = {
+        name: user.name,
+        email: user.email,
+        dept: user.department,
+    };
+
+    if (user.role === 'student') {
+        profileData.id = user.academicId;
+        profileData.level = user.level;
+    }
+
+    res.status(200).json({
+        status: HttpText.SUCCESS,
+        data: profileData
+    });
+});
 
 export default {
     addUser,
     getAllUsers,
     getSpecificUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getProfile,
 }

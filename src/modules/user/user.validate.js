@@ -20,13 +20,44 @@ export const userValidationSchema = joi.object({
             'string.pattern.base': 'Password must include at least one uppercase letter, one lowercase letter, one digit, and one special character.',
             'any.required': 'Password is required.'
         }),
-    department: joi.string().required().messages({
-        'string.empty': 'Department is required.',
-        'any.required': 'Department is required.'
-    }),
-    role: joi.string().valid('student', 'professor', 'admin').default('student').messages({
-        'any.only': 'Role must be one of: student, professor, admin.'
-    }),
+    department: joi.string()
+        .valid('Communication Engineering', 'Control Engineering', 'Computer Science', 'Medical Engineering', 'Networking', 'Automation', 'Cybersecurity')
+        .required()
+        .messages({
+            'string.empty': 'Department is required.',
+            'any.required': 'Department is required.',
+            'any.only': 'Department must be one of: Communication Engineering, Control Engineering, Computer Science, Medical Engineering, Networking, Automation, Cybersecurity.'
+        }),
+    role: joi.string()
+        .valid('student', 'professor', 'admin')
+        .default('student')
+        .messages({
+            'any.only': 'Role must be one of: student, professor, admin.'
+        }),
+    level: joi.number()
+        .valid(1, 2, 3, 4, 5)
+        .when(' Gino', {
+            is: 'student',
+            then: joi.required(),
+            otherwise: joi.forbidden()
+        })
+        .messages({
+            'any.required': 'Level is required for students.',
+            'any.only': 'Level must be one of: 1, 2, 3, 4, 5.',
+            'any.forbidden': 'Level is only applicable for students.'
+        }),
+    academicId: joi.string()
+        .trim()
+        .when('role', {
+            is: 'student',
+            then: joi.required(),
+            otherwise: joi.forbidden()
+        })
+        .messages({
+            'string.empty': 'Academic ID is required for students.',
+            'any.required': 'Academic ID is required for students.',
+            'any.forbidden': 'Academic ID is only applicable for students.'
+        }),
     passwordChangedAt: joi.date(),
     courses: joi.array().items(joi.string())
 });
