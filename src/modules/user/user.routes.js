@@ -5,6 +5,7 @@ import { protectRoute } from './../../middlewares/protectRoute.js';
 import { allowedTo } from "../../middlewares/allowedTo.js";
 import { validate } from './../../middlewares/validate.js';
 import { userValidationSchema } from "./user.validate.js";
+import checkPayment from "../../middlewares/checkPayment.js";
 
 
 export const userRouter = Router();
@@ -17,7 +18,9 @@ userRouter.route('/')
 
 userRouter.get('/me', allowedTo('student', 'professor', 'admin'), userController.getProfile);
 
-userRouter.get('/:id',checkEmail, allowedTo('admin'), userController.getSpecificUser)
+userRouter.get('/courses', checkPayment, allowedTo('student'), userController.getUserCourses);
+
+userRouter.get('/:id',checkEmail, allowedTo('admin'), userController.getSpecificUser);
 
 userRouter.route('/:id')
             .put(allowedTo('admin'), userController.updateUser)

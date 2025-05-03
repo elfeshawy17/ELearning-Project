@@ -54,7 +54,6 @@ const getSpecificUser = asyncErrorHandler(
     }
 );
 
-
 const updateUser = asyncErrorHandler(
     async (req, res, next) => {
 
@@ -116,6 +115,20 @@ const getProfile = asyncErrorHandler(
     });
 });
 
+const getUserCourses = asyncErrorHandler(
+    async (req, res, next) => {
+
+    const user = await User.findById(req.user.id).populate({
+        path: 'payment',
+        populate: { path: 'courses' }
+    });
+
+    res.status(200).json({
+        status: HttpText.SUCCESS,
+        data: user.payment.courses
+    });
+});
+
 export default {
     addUser,
     getAllUsers,
@@ -123,4 +136,5 @@ export default {
     updateUser,
     deleteUser,
     getProfile,
+    getUserCourses
 }

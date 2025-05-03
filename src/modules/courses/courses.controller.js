@@ -2,25 +2,78 @@ import { Course } from "../../../data/models/course.js"
 import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js"
 import AppError from "../../../utils/AppError.js"
 import HttpText from "../../../utils/HttpText.js"
+import { Payment } from './../../../data/models/payment.js';
+import { User } from "../../../data/models/user.model.js";
 
-export const addCourse =asyncErrorHandler(async(req,res,next)=>{
 
-    let exists =await Course.findOne({title:req.body.title})
+export const addCourse = asyncErrorHandler(async(req,res,next)=>{
 
+    const { title, department, hours, professor, students } = req.body;
+
+    // validate course exist
+    const exists = await Course.findOne({title})
     if(exists){
-
-        const error=AppError.create("Course already exist",400,HttpText.FAIL)
+        const error = AppError.create("Course already exist",400,HttpText.FAIL)
         return next(error)
     }
 
-    let course=new Course(req.body)
-    course.save()
+    // Validate professor
+    const profUser = await User.findById(professor);
+    if (!profUser || profUser.role !== 'professor') {
+        return next(AppError.create('Invalid professor ID or role', 400, HttpText.FAIL));
+    }
 
-    res.status(201).json({status:HttpText.SUCCESS,data:course})
-})
+    // Validate students (if provided)
+    if (students && students.length > 0) {
+        const studentUsers = await User.find({ _id: { $in: students } });
+        if (studentUsers.length !== students.length || studentUsers.some(user => user.role !== 'student')) {
+            return next(AppError.create('Invalid student IDs or roles', 400, HttpText.FAIL));
+        }
+    }
 
+    const course = new Course({
+        title,
+        professor,
+        department,
+        hours,
+        lecture: [],
+        students: students || [],
+        assignment: []
+    });
+    await course.save();
 
-export const getAllCourses=asyncErrorHandler(async(req,res,next)=>{
+    // If students are added, update their Payment
+    if (students && students.length > 0) {
+        for (const studentId of students) {
+            const student = await User.findById(studentId);
+            let payment = await Payment.findOne({ studentId });
+
+            if (!payment) {
+                payment = new Payment({
+                    studentId,
+                    courses: [course._id],
+                    totalFee: course.hours * 50, // Hard-coded hourly rate for now
+                    hasPaid: false,
+                    hourlyRate: 50
+                });
+            } else {
+                payment.courses.push(course._id);
+                payment.totalFee += course.hours * 50;
+            }
+            await payment.save();
+
+            student.payment = payment._id;
+            await student.save();
+        }
+    }
+
+    res.status(201).json({
+        status: HttpText.SUCCESS,
+        data: { course }
+    });
+});
+
+export const getAllCourses = asyncErrorHandler(async(req,res,next)=>{
 
     let pageNumber =req.query.page *1 || 1
     if(pageNumber<1)pageNumber=1
@@ -30,7 +83,19 @@ export const getAllCourses=asyncErrorHandler(async(req,res,next)=>{
     let courses=await Course.find().skip(skip).limit(limit)
 
     res.status(201).json({status:HttpText.SUCCESS,data:courses})
-})
+});
+
+export const getProfessorCourses = asyncErrorHandler(async(req, res, next) => {
+    const courses = await Course.find({ professor: req.user.id })
+        .populate('lecture', 'title')
+        .populate('assignment', 'title')
+        .populate('students', 'name');
+
+    res.status(200).json({
+        status: HttpText.SUCCESS,
+        data: courses
+    });
+});
 
 export const getSpecificCourse = asyncErrorHandler(
     async (req, res, next) => {
@@ -48,10 +113,9 @@ export const getSpecificCourse = asyncErrorHandler(
         });
 
     }
-)
+);
 
-
-export const updateCourse=asyncErrorHandler(async(req,res,next)=>{
+export const updateCourse = asyncErrorHandler(async(req,res,next)=>{
     let course =await Course.findById(req.params.id)
 
 
@@ -71,10 +135,9 @@ export const updateCourse=asyncErrorHandler(async(req,res,next)=>{
     let Updated =await Course.findByIdAndUpdate(req.params.id,req.body,{new:true})
 
     res.status(201).json({status:HttpText.SUCCESS,data:Updated})
-})
+});
 
-
-export const deleteCourse =asyncErrorHandler(async(req,res,next)=>{
+export const deleteCourse = asyncErrorHandler(async(req,res,next)=>{
 
     let course =await Course.findByIdAndDelete(req.params.id)
 
@@ -84,4 +147,4 @@ export const deleteCourse =asyncErrorHandler(async(req,res,next)=>{
     }
 
     res.status(201).json({status:HttpText.SUCCESS,data:course})
-})
+});
