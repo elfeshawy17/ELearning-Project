@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
- 
+
 const paymentSchema = new Schema({
     studentId: {
         type: Schema.Types.ObjectId,

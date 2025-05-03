@@ -2,9 +2,8 @@ import { Course } from "../../../data/models/course.js"
 import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js"
 import AppError from "../../../utils/AppError.js"
 import HttpText from "../../../utils/HttpText.js"
-import { Payment } from './../../../data/models/payment.js';
 import { User } from "../../../data/models/user.model.js";
-
+import { Payment } from "../../../data/models/payment.js";
 
 export const addCourse = asyncErrorHandler(async(req,res,next)=>{
 
@@ -62,8 +61,10 @@ export const addCourse = asyncErrorHandler(async(req,res,next)=>{
             }
             await payment.save();
 
-            student.payment = payment._id;
-            await student.save();
+            await User.updateOne(
+                { _id: studentId },
+                { $set: { payment: payment._id } }
+            );
         }
     }
 
@@ -100,11 +101,25 @@ export const getProfessorCourses = asyncErrorHandler(async(req, res, next) => {
 export const getSpecificCourse = asyncErrorHandler(
     async (req, res, next) => {
 
-        const course = await Course.findById(req.params.id);
+        const user = await User.findById(req.user.id).populate({
+            path: 'payment',
+            populate: {
+                path: 'courses',
+                populate: [
+                    { path: 'lecture', select: 'title content filePath' },
+                    { path: 'assignment', select: 'title content filePath' }
+                ]
+            }
+        });
 
-        if (!assignment) {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
             const error = AppError.create('Course is not found.', 404, HttpText.FAIL);
             next(error);
+        }
+
+        if (!user.payment.courses.some(c => c._id.toString() === course._id.toString())) {
+            return next(AppError.create('This course is not available for you.', 403, HttpText.FAIL));
         }
 
         res.status(200).json({
