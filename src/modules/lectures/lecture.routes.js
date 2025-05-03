@@ -10,12 +10,12 @@ import { validateFile } from './../../middlewares/validatePDF.js';
 const lectureRouter = Router();
 const validator = createValidator(); 
 
-lectureRouter.use(protectRoute, allowedTo('admin', 'professor'));
+lectureRouter.use(protectRoute);
 
-lectureRouter.post("/", upload.single('fileUrl'), validateFile, validator.body(lectureValidationSchema), addLecture);
-lectureRouter.get("/", allowedTo('admin', 'professor', 'student'), getAllLecture);
-lectureRouter.get("/:id", allowedTo('admin', 'professor', 'student'), getSpecificLecture);
-lectureRouter.put("/:id", updateLecture);
-lectureRouter.delete("/:id", deleteLecture);
+lectureRouter.post("/", allowedTo('professor'), upload.single('fileUrl'), validateFile, validator.body(lectureValidationSchema), addLecture);
+lectureRouter.get("/", allowedTo('professor', 'student'), getAllLecture);
+lectureRouter.get("/:id", allowedTo('professor', 'student'), getSpecificLecture);
+lectureRouter.put("/:id", allowedTo('professor'),  updateLecture);
+lectureRouter.delete("/:id", allowedTo('professor'),  deleteLecture);
 
 export default lectureRouter;

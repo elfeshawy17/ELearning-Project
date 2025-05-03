@@ -17,7 +17,9 @@ userRouter.route('/')
 
 userRouter.get('/me', allowedTo('student', 'professor', 'admin'), userController.getProfile);
 
-userRouter.get('/:id',checkEmail, allowedTo('admin'), userController.getSpecificUser)
+userRouter.get('/courses', allowedTo('student'), userController.getUserCourses);
+
+userRouter.get('/:id',checkEmail, allowedTo('admin'), userController.getSpecificUser);
 
 userRouter.route('/:id')
             .put(allowedTo('admin'), userController.updateUser)

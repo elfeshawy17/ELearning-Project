@@ -4,11 +4,10 @@ import HttpText from "../../../utils/HttpText.js";
 import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js";
 
 
-export const addLecture=asyncErrorHandler(async(req,res,next)=>{
-    let exists =await Lecture.findOne({title:req.body.title})
+export const addLecture = asyncErrorHandler(async(req,res,next)=>{
+    let exists = await Lecture.findOne({title:req.body.title})
 
     if(exists){
-
         const error=AppError.create("Lecture already exist",400,HttpText.FAIL)
         return next(error)
     }

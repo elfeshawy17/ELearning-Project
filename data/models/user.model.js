@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
@@ -60,10 +60,11 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     passwordChangedAt: Date,
-    courses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course'
-    }]
+    payment: {
+        type: Schema.Types.ObjectId,
+        ref: "Payment",
+        default: null
+    }
 }, {
     timestamps: true,
     versionKey: false

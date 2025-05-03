@@ -58,6 +58,5 @@ export const userValidationSchema = joi.object({
             'any.required': 'Academic ID is required for students.',
             'any.forbidden': 'Academic ID is only applicable for students.'
         }),
-    passwordChangedAt: joi.date(),
-    courses: joi.array().items(joi.string())
+    passwordChangedAt: joi.date()
 });
