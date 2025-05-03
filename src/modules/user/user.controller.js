@@ -54,7 +54,6 @@ const getSpecificUser = asyncErrorHandler(
     }
 );
 
-
 const updateUser = asyncErrorHandler(
     async (req, res, next) => {
 

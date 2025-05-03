@@ -3,6 +3,8 @@ import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js"
 import AppError from "../../../utils/AppError.js"
 import HttpText from "../../../utils/HttpText.js"
 import { Payment } from './../../../data/models/payment.js';
+import { User } from "../../../data/models/user.model.js";
+
 
 export const addCourse = asyncErrorHandler(async(req,res,next)=>{
 
@@ -14,7 +16,6 @@ export const addCourse = asyncErrorHandler(async(req,res,next)=>{
         const error = AppError.create("Course already exist",400,HttpText.FAIL)
         return next(error)
     }
-
 
     // Validate professor
     const profUser = await User.findById(professor);
@@ -72,7 +73,6 @@ export const addCourse = asyncErrorHandler(async(req,res,next)=>{
     });
 });
 
-
 export const getAllCourses = asyncErrorHandler(async(req,res,next)=>{
 
     let pageNumber =req.query.page *1 || 1
@@ -83,7 +83,7 @@ export const getAllCourses = asyncErrorHandler(async(req,res,next)=>{
     let courses=await Course.find().skip(skip).limit(limit)
 
     res.status(201).json({status:HttpText.SUCCESS,data:courses})
-})
+});
 
 export const getProfessorCourses = asyncErrorHandler(async(req, res, next) => {
     const courses = await Course.find({ professor: req.user.id })
@@ -113,8 +113,7 @@ export const getSpecificCourse = asyncErrorHandler(
         });
 
     }
-)
-
+);
 
 export const updateCourse = asyncErrorHandler(async(req,res,next)=>{
     let course =await Course.findById(req.params.id)
@@ -136,8 +135,7 @@ export const updateCourse = asyncErrorHandler(async(req,res,next)=>{
     let Updated =await Course.findByIdAndUpdate(req.params.id,req.body,{new:true})
 
     res.status(201).json({status:HttpText.SUCCESS,data:Updated})
-})
-
+});
 
 export const deleteCourse = asyncErrorHandler(async(req,res,next)=>{
 
@@ -149,4 +147,4 @@ export const deleteCourse = asyncErrorHandler(async(req,res,next)=>{
     }
 
     res.status(201).json({status:HttpText.SUCCESS,data:course})
-})
+});
