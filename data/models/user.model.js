@@ -27,12 +27,37 @@ const userSchema = new mongoose.Schema({
     },
     department: {
         type: String,
-        required: true
+        required: true,
+        enum: ['Communication Engineering', 'Control Engineering', 'Computer Science', 'Biomedical Engineering', 'Networking', 'Automation', 'Cybersecurity'],
+        trim: true
     },
     role: {
         type: String,
         enum: ['student', 'professor', 'admin'],
         default: 'student'
+    },
+    level: {
+        type: Number,
+        enum: [1, 2, 3, 4, 5],
+        required: false,
+        validate: {
+            validator: function(value) {
+                return this.role === 'student' ? (value !== undefined && value !== null) : true;
+            },
+            message: 'Level is required for students only.'
+        }
+    },
+    academicId: {
+        type: String,
+        unique: true,
+        required: false,
+        validate: {
+            validator: function(value) {
+                return this.role === 'student' ? (value !== undefined && value !== null) : true;
+            },
+            message: 'Academic ID is required for students only.'
+        },
+        trim: true
     },
     passwordChangedAt: Date,
     courses: [{
@@ -55,6 +80,28 @@ userSchema.pre('findOneAndUpdate', function() {
     if (this._update.password) {
         this._update.password = bcrypt.hashSync(this._update.password, 8);
     }
+    if (this._update.level !== undefined) {
+        const role = this._update.role || this.getQuery().role;
+        if (role === 'student' && (this._update.level === undefined || this._update.level === null)) {
+            return next(new Error('Level is required for students.'));
+        }
+        if (role !== 'student' && this._update.level !== undefined) {
+            delete this._update.level; // لو مش student، نشيل الـ level
+        }
+    }
+    if (this._update.academicId !== undefined) {
+        const role = this._update.role || this.getQuery().role;
+        if (role === 'student' && (this._update.academicId === undefined || this._update.academicId === null)) {
+            return next(new Error('Academic ID is required for students.'));
+        }
+        if (role !== 'student' && this._update.academicId !== undefined) {
+            delete this._update.academicId;
+        }
+    }
+    if (this._update.department && !['Communication Engineering', 'Control Engineering', 'Computer Science', 'Medical Engineering', 'Networking', 'Automation', 'Cybersecurity'].includes(this._update.department)) {
+        return next(new Error('Department must be one of: Communication Engineering, Control Engineering, Computer Science, Medical Engineering, Networking, Automation, Cybersecurity'));
+    }
+    next();
 });
 
 
