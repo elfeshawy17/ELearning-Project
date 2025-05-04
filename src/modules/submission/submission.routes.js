@@ -12,7 +12,8 @@ submissionRouter.use(protectRoute);
 
 submissionRouter.route('/')
                 .post(allowedTo('student'), upload.single('fileUrl'), validateFile, submissionController.addSubmission)
-                .get(allowedTo('professor'), submissionController.getAllSubmissions)
+
+submissionRouter.get("/:assignmentId",allowedTo('professor'), submissionController.getAllSubmissions)
 
 submissionRouter.route('/:id')
                 .get(allowedTo('student', 'professor'), submissionController.getSubmission)

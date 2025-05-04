@@ -1,3 +1,4 @@
+import { Assignment } from "../../../data/models/assignment.js";
 import { Submission } from "../../../data/models/submission.js";
 import AppError from "../../../utils/AppError.js";
 import HttpText from "../../../utils/HttpText.js";
@@ -30,7 +31,22 @@ const addSubmission = asyncErrorHandler(
 const getAllSubmissions = asyncErrorHandler(
     async (req, res, next) => {
 
-        const submissions = await Submission.find();
+        const assignment = await Assignment.findById(req.params.assignmentId);
+
+        if(!assignment){
+            const error = AppError.create('This assignment is not found.', 404, HttpText.FAIL);
+            return next(error);
+        }
+
+        const submissions = await Submission.find({ assignment: assignment._id });
+
+        if(!assignment){
+            res.status(200).json({
+                status: HttpText.SUCCESS,
+                msg:"There is no submissions added"
+            })
+        }
+
 
         res.status(200).json({
             status: HttpText.SUCCESS,
