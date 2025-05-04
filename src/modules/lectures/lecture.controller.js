@@ -1,3 +1,4 @@
+import { Course } from "../../../data/models/course.js";
 import { Lecture } from "../../../data/models/lecture.js";
 import AppError from "../../../utils/AppError.js";
 import HttpText from "../../../utils/HttpText.js";
@@ -5,21 +6,38 @@ import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js";
 
 
 export const addLecture = asyncErrorHandler(async(req,res,next)=>{
-    let exists = await Lecture.findOne({title:req.body.title})
 
+    let exists = await Lecture.findOne({title:req.body.title})
     if(exists){
         const error=AppError.create("Lecture already exist",400,HttpText.FAIL)
         return next(error)
     }
 
+    const course = await Course.findById(req.params.courseId);
+    if(!course) {
+        const error=AppError.create("Course is not found.",404,HttpText.FAIL)
+        return next(error);
+    }
+
     const fileUrl = req.file.path;
     let lecture = new Lecture({
         ...req.body,
+        course,
         fileUrl
-    })
+    });
     await lecture.save();
 
-    res.status(201).json({status:HttpText.SUCCESS,data:lecture})
+    const updatedCourse = await Course.updateOne(
+        { _id: req.params.courseId },
+        { $addToSet: { lecture: { $each: lecture._id } } }
+    );
+
+    if (updatedCourse.modifiedCount === 0) {
+        const error = AppError.create('Failed to add lecture to this course.', 500, HttpText.FAIL);
+        return next(error);
+    }
+
+    res.status(201).json({status:HttpText.SUCCESS,data:lecture});
 })
 
 

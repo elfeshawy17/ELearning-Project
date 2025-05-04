@@ -104,8 +104,8 @@ export const getSpecificCourse = asyncErrorHandler(
             populate: {
                 path: 'courses',
                 populate: [
-                    { path: 'lecture', select: 'title content filePath' },
-                    { path: 'assignment', select: 'title content filePath' }
+                    { path: 'lecture', select: 'title fileUrl' },
+                    { path: 'assignment', select: 'title fileUrl' }
                 ]
             }
         });

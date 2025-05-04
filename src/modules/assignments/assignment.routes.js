@@ -12,8 +12,8 @@ const validator = createValidator();
 
 assignmentRouter.use(protectRoute);
 
-assignmentRouter.post("/", allowedTo('professor'), upload.single('fileUrl'), validateFile, validator.body(assignmentValidationSchema), addAssignment);
 assignmentRouter.get("/", allowedTo('professor', 'student'), getAllAssignment);
+assignmentRouter.post("/:courseId", allowedTo('professor'), upload.single('fileUrl'), validateFile, validator.body(assignmentValidationSchema), addAssignment);
 assignmentRouter.get('/:id', allowedTo('professor', 'student'), getSpecificAssignment);
 assignmentRouter.put("/:id", allowedTo('professor'), updateAssignment);
 assignmentRouter.delete("/:id", allowedTo('professor'), deleteAssignment);
