@@ -7,7 +7,7 @@ import { Payment } from "../../../data/models/payment.js";
 
 export const addCourse = asyncErrorHandler(async(req,res,next)=>{
 
-    const { title, department, hours, professor, students } = req.body;
+    const { title, department, hours, professor } = req.body;
 
     // validate course exist
     const exists = await Course.findOne({title})
@@ -36,7 +36,6 @@ export const addCourse = asyncErrorHandler(async(req,res,next)=>{
         department,
         hours,
         lecture: [],
-        students: students || [],
         assignment: []
     });
     await course.save();
@@ -90,7 +89,6 @@ export const getProfessorCourses = asyncErrorHandler(async(req, res, next) => {
     const courses = await Course.find({ professor: req.user.id })
         .populate('lecture', 'title')
         .populate('assignment', 'title')
-        .populate('students', 'name');
 
     res.status(200).json({
         status: HttpText.SUCCESS,

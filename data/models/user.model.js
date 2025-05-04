@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
     department: {
         type: String,
         required: true,
-        enum: ['Communication Engineering', 'Control Engineering', 'Computer Science', 'Biomedical Engineering', 'Networking', 'Automation', 'Cybersecurity'],
+        enum: ['Communication Engineering', 'Control Engineering', 'Computer Science', 'Biomedical Engineering', 'Networking', 'Automation', 'Cybersecurity', 'IT'],
         trim: true
     },
     role: {
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     },
     level: {
         type: Number,
-        enum: [1, 2, 3, 4, 5],
+        enum: [0, 1, 2, 3, 4],
         required: false,
         validate: {
             validator: function(value) {
@@ -60,6 +60,16 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     passwordChangedAt: Date,
+    courses: [{
+        type: Schema.Types.ObjectId,
+        ref: "Course",
+        validate: {
+        validator: function() {
+            return this.role === 'student';
+        },
+        message: "Only students can have courses"
+        }
+    }],      
     payment: {
         type: Schema.Types.ObjectId,
         ref: "Payment",
@@ -72,12 +82,10 @@ const userSchema = new mongoose.Schema({
 
 
 userSchema.pre('save', function(){
-
     this.password = bcrypt.hashSync(this.password, 8);
-
 });
 
-userSchema.pre('findOneAndUpdate', function() {
+userSchema.pre('findOneAndUpdate', async function(next) {
     if (this._update.password) {
         this._update.password = bcrypt.hashSync(this._update.password, 8);
     }

@@ -18,10 +18,14 @@ userRouter.route('/')
 
 userRouter.get('/me', allowedTo('student', 'professor', 'admin'), userController.getProfile);
 
-userRouter.get('/courses', checkPayment, allowedTo('student'), userController.getUserCourses);
+userRouter.get('/courses', allowedTo('student'), userController.getUserCourses);
 
-userRouter.get('/:id',checkEmail, allowedTo('admin'), userController.getSpecificUser);
+userRouter.get('/states', allowedTo('admin'), userController.getStates);
+
+userRouter.get('/:id', checkEmail, allowedTo('admin'), userController.getSpecificUser);
 
 userRouter.route('/:id')
             .put(allowedTo('admin'), userController.updateUser)
             .delete(allowedTo('admin'), userController.deleteUser)
+
+userRouter.patch('/:id/enroll', allowedTo('admin'), userController.enrollCourse);

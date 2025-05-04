@@ -12,9 +12,9 @@ submissionRouter.use(protectRoute);
 
 submissionRouter.route('/')
                 .post(allowedTo('student'), upload.single('fileUrl'), validateFile, submissionController.addSubmission)
-                .get(allowedTo('professor', 'admin'), submissionController.getAllSubmissions)
+                .get(allowedTo('professor'), submissionController.getAllSubmissions)
 
 submissionRouter.route('/:id')
-                .get(allowedTo('student', 'professor', 'admin'), submissionController.getSubmission)
+                .get(allowedTo('student', 'professor'), submissionController.getSubmission)
                 .put(allowedTo('student'), submissionController.updateSubmission)
-                .delete(allowedTo('admin'), submissionController.deleteSubmission)
+                .delete(allowedTo('professor'), submissionController.deleteSubmission)
