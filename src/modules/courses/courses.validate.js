@@ -1,6 +1,16 @@
 import Joi from "joi";
 
 const courseValidationSchema = Joi.object({
+    courseCode: Joi.string().trim().alphanum().min(2).max(10).required()
+        .messages({
+            "string.base": "Course code must be a string",
+            "string.empty": "Course code is required",
+            "string.alphanum": "Course code must contain only letters and numbers",
+            "string.min": "Course code must be at least 2 characters",
+            "string.max": "Course code must not exceed 10 characters",
+            "any.required": "Course code is required"
+        }),
+
     title: Joi.string().trim().min(3).max(100).required()
         .messages({
             "string.empty": "Title is required",

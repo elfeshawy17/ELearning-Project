@@ -3,11 +3,12 @@ import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js"
 import AppError from "../../../utils/AppError.js"
 import HttpText from "../../../utils/HttpText.js"
 import { User } from "../../../data/models/user.model.js";
-import { Payment } from "../../../data/models/payment.js";
 
 export const addCourse = asyncErrorHandler(async(req,res,next)=>{
 
-    const { title, department, hours, professor } = req.body;
+    const { title, courseCode, department, hours } = req.body;
+    const professorName = req.body.professor;
+    const normalizedProfName = professorName.toLowerCase();
 
     // validate course exist
     const exists = await Course.findOne({title})
@@ -17,55 +18,21 @@ export const addCourse = asyncErrorHandler(async(req,res,next)=>{
     }
 
     // Validate professor
-    const profUser = await User.findById(professor);
+    const profUser = await User.findOne({ name: normalizedProfName });
     if (!profUser || profUser.role !== 'professor') {
-        return next(AppError.create('Invalid professor ID or role', 400, HttpText.FAIL));
-    }
-
-    // Validate students (if provided)
-    if (students && students.length > 0) {
-        const studentUsers = await User.find({ _id: { $in: students } });
-        if (studentUsers.length !== students.length || studentUsers.some(user => user.role !== 'student')) {
-            return next(AppError.create('Invalid student IDs or roles', 400, HttpText.FAIL));
-        }
+        return next(AppError.create('Invalid professor name or role', 400, HttpText.FAIL));
     }
 
     const course = new Course({
         title,
-        professor,
+        courseCode,
+        professor: profUser._id,
         department,
         hours,
         lecture: [],
         assignment: []
     });
     await course.save();
-
-    // If students are added, update their Payment
-    if (students && students.length > 0) {
-        for (const studentId of students) {
-            const student = await User.findById(studentId);
-            let payment = await Payment.findOne({ studentId });
-
-            if (!payment) {
-                payment = new Payment({
-                    studentId,
-                    courses: [course._id],
-                    totalFee: course.hours * 50, // Hard-coded hourly rate for now
-                    hasPaid: false,
-                    hourlyRate: 50
-                });
-            } else {
-                payment.courses.push(course._id);
-                payment.totalFee += course.hours * 50;
-            }
-            await payment.save();
-
-            await User.updateOne(
-                { _id: studentId },
-                { $set: { payment: payment._id } }
-            );
-        }
-    }
 
     res.status(201).json({
         status: HttpText.SUCCESS,
@@ -80,9 +47,12 @@ export const getAllCourses = asyncErrorHandler(async(req,res,next)=>{
     let limit =4
     const skip =(parseInt(pageNumber-1))*limit
 
-    let courses=await Course.find().skip(skip).limit(limit)
+    let courses = await Course.find().skip(skip).limit(limit).populate('professor', 'name');
 
-    res.status(201).json({status:HttpText.SUCCESS,data:courses})
+    res.status(201).json({
+        status:HttpText.SUCCESS,
+        data: { courses }
+    })
 });
 
 export const getProfessorCourses = asyncErrorHandler(async(req, res, next) => {

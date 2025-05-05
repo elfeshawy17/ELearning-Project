@@ -6,6 +6,12 @@ const courseSchema = new Schema({
         required: true,
         trim: true 
     },
+    courseCode: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
+    },
     professor:{
         type:Schema.Types.ObjectId,
         ref:"User",
