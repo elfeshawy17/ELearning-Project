@@ -8,7 +8,7 @@ export const addCourse = asyncErrorHandler(async(req,res,next)=>{
 
     const { title, courseCode, department, hours } = req.body;
     const professorName = req.body.professor;
-    const normalizedProfName = professorName.toLowerCase();
+    const normalizedProfName = professorName.trim().toLowerCase();
 
     // validate course exist
     const exists = await Course.findOne({title})
@@ -44,7 +44,7 @@ export const getAllCourses = asyncErrorHandler(async(req,res,next)=>{
 
     let pageNumber =req.query.page *1 || 1
     if(pageNumber<1)pageNumber=1
-    let limit =4
+    let limit = 4
     const skip =(parseInt(pageNumber-1))*limit
 
     let courses = await Course.find().skip(skip).limit(limit).populate('professor', 'name');

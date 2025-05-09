@@ -43,6 +43,42 @@ const getAllUsers = asyncErrorHandler(
     }
 );
 
+const getAllAdmins = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const admins = await User.find({role: 'admin'});
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: {admins}
+        })
+    }
+);
+
+const getAllProfessors = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const professors = await User.find({role: 'professor'});
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: {professors}
+        })
+    }
+);
+
+const getAllStudents = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const students = await User.find({role: 'student'});    
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: {students}
+        })
+    }
+);
+
 const getSpecificUser = asyncErrorHandler(
     async (req, res, next) => {
 
@@ -133,48 +169,6 @@ const getUserCourses = asyncErrorHandler(
     });
 });
 
-const enrollCourse = asyncErrorHandler(
-    async (req, res, next) => {
-
-        const { courses } = req.body;
-        const coursesExist = await Course.find({ _id: { $in: courses } });
-        if (coursesExist.length !== courses.length) {
-            return res.status(400).json({ message: 'One or more course IDs are invalid' });
-        }
-
-        const student = await User.findById(req.params.id);
-        if (!student) {
-            const error = AppError.create('Student is not found', 404, HttpText.FAIL);
-            return next(error); 
-        }
-        if (student.role !== 'student') {
-            const error = AppError.create('User is not a student', 403, HttpText.FAIL);
-            return next(error); 
-        }
-
-        const updatedStudent = await User.updateOne(
-            { _id: req.params.id }, // فلتر لتحديد الطالب
-            { $addToSet: { courses: { $each: courses } } } // إضافة الكورسات بدون تكرار
-        );
-
-        // التحقق من نجاح التحديث
-        if (updatedStudent.modifiedCount === 0) {
-            const error = AppError.create('Failed to enroll courses', 500, HttpText.FAIL);
-            return next(error);
-        }
-
-        // جلب بيانات الطالب المحدثة للـ response
-        const updatedStudentData = await User.findById(req.params.id).select('_id courses');
-
-        res.status(200).json({
-            message: 'Courses enrolled successfully',
-            student: {
-                _id: updatedStudentData._id,
-                courses: updatedStudentData.courses,
-            },
-        });
-});
-
 const getStates = asyncErrorHandler(
     async (req, res, next) => {
 
@@ -193,11 +187,13 @@ const getStates = asyncErrorHandler(
 export default {
     addUser,
     getAllUsers,
+    getAllAdmins,
+    getAllProfessors,
+    getAllStudents,
     getSpecificUser,
     updateUser,
     deleteUser,
     getProfile,
     getUserCourses,
-    enrollCourse,
     getStates
 }

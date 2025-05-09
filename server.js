@@ -9,6 +9,7 @@ import courseRouter from './src/modules/courses/courses.routes.js';
 import lectureRouter from './src/modules/lectures/lecture.routes.js';
 import assignmentRouter from './src/modules/assignments/assignment.routes.js';
 import { submissionRouter } from './src/modules/submission/submission.routes.js';
+import { enrollmentRouter } from './src/modules/enrolments/enrollment.routes.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerFile from './swagger-output.json' with { type: 'json' };
 
@@ -25,6 +26,7 @@ app.use('/api/courses', courseRouter)
 app.use('/api/lectures', lectureRouter)
 app.use('/api/assignments', assignmentRouter)
 app.use('/api/submissions', submissionRouter)
+app.use('/api/enrollments', enrollmentRouter)
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { swaggerOptions: { persistAuthorization: true } }));
 
