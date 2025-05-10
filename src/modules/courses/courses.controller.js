@@ -124,3 +124,8 @@ export const deleteCourse = asyncErrorHandler(async(req,res,next)=>{
 
     res.status(201).json({status:HttpText.SUCCESS,data:course})
 });
+
+export const getProfessorCoursesCount = asyncErrorHandler(async(req,res,next)=>{
+    const count = await Course.countDocuments({professor:req.user.id})
+    res.status(200).json({status:HttpText.SUCCESS,data:count})
+})
