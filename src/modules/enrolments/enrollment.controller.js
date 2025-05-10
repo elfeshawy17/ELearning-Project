@@ -14,7 +14,7 @@ const getAllEnrollments = asyncErrorHandler(
     let limit = 4;
     const skip = (parseInt(pageNumber-1)) * limit;
 
-    const enrollments = await Enrollment.find().limit(limit).skip(skip).populate('courses', 'title courseCode');
+    const enrollments = await Enrollment.find().limit(limit).skip(skip);
 
     res.status(200).json({
             status:HttpText.SUCCESS,

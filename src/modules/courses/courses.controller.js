@@ -107,13 +107,6 @@ export const updateCourse = asyncErrorHandler(async(req,res,next)=>{
         return next(error)
     }
 
-    let exists =await Course.findOne({title:req.body.title})
-
-    if(exists){
-
-        const error=AppError.create("Course already exist",400,HttpText.FAIL)
-        return next(error)
-    }
 
     let Updated =await Course.findByIdAndUpdate(req.params.id,req.body,{new:true})
 
