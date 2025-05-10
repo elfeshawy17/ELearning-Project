@@ -161,7 +161,7 @@ const getProfile = asyncErrorHandler(
 const getUserCourses = asyncErrorHandler(
     async (req, res, next) => {
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).populate('courses', 'title professor hours');
 
     res.status(200).json({
         status: HttpText.SUCCESS,

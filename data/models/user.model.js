@@ -114,5 +114,9 @@ userSchema.pre('findOneAndUpdate', async function(next) {
     next();
 });
 
+userSchema.pre('find', function(next) {
+    this.populate('courses', 'title professor hours');
+    next();
+});
 
 export const User = mongoose.model('User', userSchema);
