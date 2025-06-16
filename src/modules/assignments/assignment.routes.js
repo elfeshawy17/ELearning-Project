@@ -10,9 +10,9 @@ import { upload } from "../../middlewares/upload.js";
 const assignmentRouter = Router();
 const validator = createValidator(); 
 
-assignmentRouter.use(protectRoute);
+assignmentRouter.use(protectRoute); 
 
-assignmentRouter.get("/", allowedTo('professor', 'student'), getAllAssignment);
+assignmentRouter.get("/:courseId", allowedTo('professor', 'student'), getAllAssignment);
 assignmentRouter.post("/:courseId", allowedTo('professor'), upload.single('fileUrl'), validateFile, validator.body(assignmentValidationSchema), addAssignment);
 assignmentRouter.get('/:id', allowedTo('professor', 'student'), getSpecificAssignment);
 assignmentRouter.put("/:id", allowedTo('professor'), updateAssignment);

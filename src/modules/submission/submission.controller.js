@@ -38,15 +38,11 @@ const getAllSubmissions = asyncErrorHandler(
             return next(error);
         }
 
-        const submissions = await Submission.find({ assignment: assignment._id });
+        const pageNumber = req.query.page * 1 || 1;
+        const limit = req.query.limit * 1 || 4;
+        const skip = (parseInt(pageNumber - 1)) * limit;
 
-        if(!assignment){
-            res.status(200).json({
-                status: HttpText.SUCCESS,
-                msg:"There is no submissions added"
-            })
-        }
-
+        const submissions = await Submission.find({ assignment: assignment._id }).populate('student', 'name email').skip(skip).limit(limit);
 
         res.status(200).json({
             status: HttpText.SUCCESS,
@@ -63,15 +59,6 @@ const getSubmission = asyncErrorHandler(
 
         if (!submission) {
             const error = AppError.create('This submission is not found.', 404, HttpText.FAIL);
-            return next(error);
-        }
-
-        if (
-            req.user.role !== 'admin' &&
-            req.user.role !== 'professor' &&
-            submission.student._id.toString() !== req.user._id.toString()
-        ) {
-            const error = AppError.create('You do not have permission to view this submission.', 403, HttpText.FAIL);
             return next(error);
         }
 

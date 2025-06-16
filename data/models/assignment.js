@@ -23,9 +23,9 @@ const assignmentSchema =new Schema({
     versionKey:false  
 })
 
-assignmentSchema.pre(/^find/,function(){
-    this.populate("course","title")
-});
+// assignmentSchema.pre(/^find/,function(){
+//     this.populate("course","title")
+// });
 
 
 export const Assignment = model("Assignment",assignmentSchema);

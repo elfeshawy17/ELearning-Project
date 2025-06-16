@@ -2,12 +2,6 @@ import Joi from "joi";
 
 
 const assignmentValidationSchema = Joi.object({
-    course: Joi.string().required()
-        .messages({
-            "any.required": "Course ID is required",
-            "string.base": "Course must be a valid ObjectId"
-        }),
-
     title: Joi.string().trim().min(3).max(100).required()
         .messages({
             "string.empty": "Title is required",

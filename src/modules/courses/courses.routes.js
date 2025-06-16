@@ -14,7 +14,7 @@ courseRouter.use(protectRoute);
 courseRouter.post("/", allowedTo('admin'), validator.body(courseValidationSchema), addCourse);
 courseRouter.get("/", allowedTo('admin'),  getAllCourses);
 courseRouter.get("/professor", allowedTo('professor'), getProfessorCourses);
-courseRouter.get("/:id", checkPayment, allowedTo('admin', 'professor', 'student'),  getSpecificCourse);
+courseRouter.get("/:id", allowedTo('admin', 'professor', 'student'),  getSpecificCourse);
 courseRouter.put("/:id", allowedTo('admin'),  updateCourse);
 courseRouter.delete("/:id", allowedTo('admin'),  deleteCourse);
 courseRouter.get("/professor/count", allowedTo('professor'), getProfessorCoursesCount);

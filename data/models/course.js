@@ -41,8 +41,8 @@ const courseSchema = new Schema({
 
 courseSchema.pre(/^find/,function(){
     this.populate("professor","name")
-    this.populate("lecture","title")
-    this.populate("assignment","title")
+    // this.populate("lecture","title")
+    // this.populate("assignment","title")
 })
 
 export const Course = model("Course", courseSchema);

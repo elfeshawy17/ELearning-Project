@@ -70,12 +70,7 @@ const userSchema = new mongoose.Schema({
         },
         message: "Only students can have courses"
         }
-    }],      
-    payment: {
-        type: Schema.Types.ObjectId,
-        ref: "Payment",
-        default: null
-    }
+    }]
 }, {
     timestamps: true,
     versionKey: false

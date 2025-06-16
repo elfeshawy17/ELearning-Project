@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const lectureValidationSchema = Joi.object({
-    course: Joi.string().required()
+    course: Joi.string()
         .messages({
             "any.required": "Course ID is required",
             "string.base": "Course must be a valid ObjectId"

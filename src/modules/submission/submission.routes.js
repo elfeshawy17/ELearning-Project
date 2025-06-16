@@ -18,4 +18,4 @@ submissionRouter.get("/:assignmentId",allowedTo('professor'), submissionControll
 submissionRouter.route('/:id')
                 .get(allowedTo('student', 'professor'), submissionController.getSubmission)
                 .put(allowedTo('student'), submissionController.updateSubmission)
-                .delete(allowedTo('professor'), submissionController.deleteSubmission)
+                .delete(allowedTo('professor', 'student'), submissionController.deleteSubmission)
