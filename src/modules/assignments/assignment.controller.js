@@ -74,18 +74,35 @@ export const getSpecificAssignment = asyncErrorHandler(
     }
 )
 
-export const updateAssignment=asyncErrorHandler(async(req,res,next)=>{
-    let assignment =await Assignment.findById(req.params.id)
+export const updateAssignment = asyncErrorHandler(async(req, res, next) => {
+    const assignment = await Assignment.findById(req.params.id);
 
-    if(!assignment){
-        const error=AppError.create("Assignment doesnt exist",400,HttpText.FAIL)
-        return next(error)
+    if (!assignment) {
+        const error = AppError.create("Assignment doesn't exist", 400, HttpText.FAIL);
+        return next(error);
     }
 
-    let Updated = await Assignment.findByIdAndUpdate(req.params.id, req.body, {new:true})
+    // Only update title and dueDate
+    if (req.body.title) {
+        assignment.title = req.body.title;
+    }
+    if (req.body.duedate) {
+        assignment.duedate = req.body.duedate;
+    }
 
-    res.status(200).json({status:HttpText.SUCCESS,data:Updated})
-})
+    // Validate that at least one field is being updated
+    if (!req.body.title && !req.body.duedate) {
+        const error = AppError.create("At least one field (title or dueDate) is required for update", 400, HttpText.FAIL);
+        return next(error);
+    }
+
+    await assignment.save();
+
+    res.status(200).json({
+        status: HttpText.SUCCESS,
+        data: assignment
+    });
+});
 
 export const deleteAssignment =asyncErrorHandler(async(req,res,next)=>{
 

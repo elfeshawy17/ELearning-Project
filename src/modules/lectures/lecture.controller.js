@@ -70,19 +70,29 @@ export const getSpecificLecture = asyncErrorHandler(
     }
 )
 
-export const updateLecture=asyncErrorHandler(async(req,res,next)=>{
-    
-    let lecture = await Lecture.findById(req.params.id)
+export const updateLecture = asyncErrorHandler(async(req, res, next) => {
+    const lecture = await Lecture.findById(req.params.id);
 
-    if(!lecture){
-        const error=AppError.create("Lecture doesnt exist",400,HttpText.FAIL)
-        return next(error)
+    if (!lecture) {
+        const error = AppError.create('Lecture is not found.', 404, HttpText.FAIL);
+        return next(error);
     }
 
-    let Updated = await Lecture.findByIdAndUpdate(req.params.id, req.body, {new:true})
+    // Only update title
+    if (req.body.title) {
+        lecture.title = req.body.title;
+    } else {
+        const error = AppError.create('Title is required for update.', 400, HttpText.FAIL);
+        return next(error);
+    }
 
-    res.status(200).json({status:HttpText.SUCCESS,data:Updated});
-})
+    await lecture.save();
+
+    res.status(200).json({
+        status: HttpText.SUCCESS,
+        data: lecture
+    });
+});
 
 export const deleteLecture =asyncErrorHandler(async(req,res,next)=>{
 

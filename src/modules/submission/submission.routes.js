@@ -10,7 +10,7 @@ export const submissionRouter = Router();
 
 submissionRouter.use(protectRoute);
 
-submissionRouter.route('/')
+submissionRouter.route('/:assignmentId')
                 .post(allowedTo('student'), upload.single('fileUrl'), validateFile, submissionController.addSubmission)
 
 submissionRouter.get("/:assignmentId",allowedTo('professor'), submissionController.getAllSubmissions)

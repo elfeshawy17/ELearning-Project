@@ -7,13 +7,24 @@ import asyncErrorHandler from "../../middlewares/asyncErrorHandler.js";
 
 const addSubmission = asyncErrorHandler(
     async (req, res, next) => {
+        // First check if the assignment exists
+        const assignment = await Assignment.findById(req.params.assignmentId);
+        
+        if (!assignment) {
+            const error = AppError.create('Assignment not found.', 404, HttpText.FAIL);
+            return next(error);
+        }
 
-        const {assignment} = req.body;
+        // Check if the deadline has passed
+        if (assignment.duedate < Date.now()) {
+            const error = AppError.create('Deadline has passed.', 400, HttpText.FAIL);
+            return next(error);
+        }
 
         const fileUrl = req.file.path;
         const submission = new Submission({
             student: req.user._id,
-            assignment,
+            assignment: req.params.assignmentId,  // Use the assignment ID directly
             fileUrl,
             status: 'submitted'
         });
@@ -22,9 +33,8 @@ const addSubmission = asyncErrorHandler(
 
         res.status(201).json({
             status: HttpText.SUCCESS,
-            data: {submission}
+            data: { submission }
         });
-
     }
 );
 
