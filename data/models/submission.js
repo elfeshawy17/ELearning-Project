@@ -14,7 +14,7 @@ const submissionSchema = new mongoose.Schema({
     fileUrl: String,
     status: {
         type: String,
-        enum: ['pending', 'submitted'],
+        enum: ['pending', 'submitted', 'missed'],
         default: 'pending'
     },
     submittedAt: { 
@@ -26,9 +26,9 @@ const submissionSchema = new mongoose.Schema({
     versionKey: false
 });
 
-submissionSchema.pre(/^find/, function(){
-    this.populate('assignment', 'title duedate');
-    this.populate('student', 'name email');
-});
+// submissionSchema.pre(/^find/, function(){
+//     this.populate('assignment', 'title duedate');
+//     this.populate('student', 'name email');
+// });
 
 export const Submission = mongoose.model('Submission', submissionSchema);

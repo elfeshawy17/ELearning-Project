@@ -9,9 +9,15 @@ const addSubmission = asyncErrorHandler(
     async (req, res, next) => {
         // First check if the assignment exists
         const assignment = await Assignment.findById(req.params.assignmentId);
-        
         if (!assignment) {
             const error = AppError.create('Assignment not found.', 404, HttpText.FAIL);
+            return next(error);
+        }
+
+        // check if the student has already submitted
+        const existingSubmission = await Submission.findOne({ assignment: assignment._id, student: req.user._id });
+        if (existingSubmission) {
+            const error = AppError.create('You have already submitted for this assignment.', 400, HttpText.FAIL);
             return next(error);
         }
 
