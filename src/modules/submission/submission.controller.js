@@ -86,6 +86,43 @@ const getSubmission = asyncErrorHandler(
     }
 );
 
+const getSubmissionStatus = asyncErrorHandler(
+    async (req, res, next) => {
+        
+        const assignment = await Assignment.findById(req.params.assignmentId);
+
+        if (!assignment) {
+            const error = AppError.create('This assignment is not found.', 404, HttpText.FAIL);
+            return next(error);
+        }
+
+        const submission = await Submission.findOne({ student: req.user._id, assignment: req.params.assignmentId });
+
+        if (!submission && assignment.duedate > Date.now()) {
+            return res.status(200).json({
+                status: HttpText.SUCCESS,
+                data: { status: 'pending' }
+            });
+        }
+
+        if (!submission) {
+            return res.status(200).json({
+                status: HttpText.SUCCESS,
+                data: { status: 'missed' }
+            });
+        }
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: {
+                id: submission._id,
+                status: submission.status
+            }
+        });
+
+    }
+);
+
 const updateSubmission = asyncErrorHandler(
     async (req, res, next) => {
 
@@ -145,5 +182,6 @@ export default {
     getAllSubmissions,
     getSubmission,
     updateSubmission,
-    deleteSubmission
+    deleteSubmission,
+    getSubmissionStatus
 }
