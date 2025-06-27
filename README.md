@@ -253,7 +253,7 @@ Ensure the following are installed:
 
 1. **Clone the Repository**:
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/elfeshawy17/ELearning-Project.git
    cd eduverse-backend
    ```
 
