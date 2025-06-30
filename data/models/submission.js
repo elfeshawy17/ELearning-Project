@@ -17,6 +17,16 @@ const submissionSchema = new mongoose.Schema({
         enum: ['pending', 'submitted', 'missed'],
         default: 'pending'
     },
+    maxGrade: {
+        type: Number,
+        min: 0,
+        max: 100
+    },
+    grade: {
+        type: Number,
+        min: 0,
+        max: 100
+    },
     submittedAt: { 
         type: Date,
         default: Date.now

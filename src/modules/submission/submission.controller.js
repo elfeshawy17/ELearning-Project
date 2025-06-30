@@ -177,11 +177,57 @@ const deleteSubmission = asyncErrorHandler(
     }
 );
 
+const gradeSubmission = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const submission = await Submission.findById(req.params.id);
+
+        if (!submission) {
+            const error = AppError.create('This submission is not found.', 404, HttpText.FAIL);
+            return next(error);
+        }
+
+        const updatedSubmission = await Submission.findByIdAndUpdate(req.params.id, {
+            maxGrade: req.body.maxGrade,
+            grade: req.body.grade
+        }, {
+            new: true,
+        }
+        );
+
+        res .status(200).json({
+            status: HttpText.SUCCESS,
+            data: updatedSubmission
+        });
+    }
+);
+
+const getGrade = asyncErrorHandler(
+    async (req, res, next) => {
+
+        const grade = await Submission.findById(req.params.id).select('grade maxGrade');
+        
+        if (!grade) {
+            res.status(200).json({
+                status: HttpText.SUCCESS,
+                data: null
+            });
+        }
+
+        res.status(200).json({
+            status: HttpText.SUCCESS,
+            data: grade
+        });
+    }
+);
+
 export default {
     addSubmission,
     getAllSubmissions,
     getSubmission,
     updateSubmission,
     deleteSubmission,
-    getSubmissionStatus
+    getSubmissionStatus,
+    gradeSubmission,
+    getGrade
 }

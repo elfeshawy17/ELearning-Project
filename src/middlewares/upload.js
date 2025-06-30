@@ -15,12 +15,16 @@ const storage = new CloudinaryStorage({
         upload_preset: "pdf_public_upload",
         resource_type: "auto",
         format: async (req, file) => "pdf", 
-        public_id: (req, res) => {
+        public_id: (req, file) => {
             const title = req.body.title;
-            if (!title) {
-                return "Student_Submession";
-            } else {
+            if (title) {
                 return title;
+            } else {
+                // Use user ID + assignment ID + timestamp for unique identification
+                const timestamp = Date.now();
+                const userId = req.user?._id || 'unknown';
+                const assignmentId = req.params?.assignmentId || 'unknown';
+                return `submission_${userId}_${assignmentId}_${timestamp}`;
             }
         }
     }

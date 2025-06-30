@@ -21,3 +21,7 @@ submissionRouter.route('/:id')
                 .get(allowedTo('student', 'professor'), submissionController.getSubmission)
                 .put(allowedTo('student'), submissionController.updateSubmission)
                 .delete(allowedTo('professor', 'student'), submissionController.deleteSubmission)
+
+submissionRouter.post("/grade/:id", allowedTo('professor'), submissionController.gradeSubmission)
+
+submissionRouter.get("/grade/:id", allowedTo('professor', 'student'), submissionController.getGrade)
