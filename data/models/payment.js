@@ -1,33 +1,47 @@
 import { model, Schema } from "mongoose";
 
 const paymentSchema = new Schema({
-    studentId: {
+    student: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: true,
+    },
+    level: {
+        type: Number,
+        enum: [0, 1, 2, 3, 4, 5],
+        required: true,
+    },
+    term: {
+        type: String,
+        enum: ["first", "second"],
+        required: true,
     },
     courses: [{
         type: Schema.Types.ObjectId,
         ref: "Course",
-        required: true
+        required: true,
     }],
-    totalFee: {
+    totalHours: {
         type: Number,
         required: true,
-        min: 0
     },
-    hasPaid: {
+    hourRate: {
+        type: Number,
+        required: true,
+    },
+    totalAmount: {
+        type: Number,
+        required: true,
+    },
+    isPaid: {
         type: Boolean,
-        default: false
+        default: false,
     },
-    hourlyRate: {
-        type: Number,
-        required: true,
-        min: 0
-    }
 }, {
     timestamps: true,
     versionKey: false
 });
+
+paymentSchema.index({ student: 1, level: 1, term: 1 }, { unique: true });
 
 export const Payment = model("Payment", paymentSchema);
