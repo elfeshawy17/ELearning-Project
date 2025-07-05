@@ -172,7 +172,7 @@ const getStudentPayment = asyncErrorHandler(
 
 const searchStudentPayment = asyncErrorHandler(
     async (req, res, next) => {
-        const { name, term, level } = req.body;
+        const { name, term, level } = req.query;
 
         const student = await User.findOne({ name: name.toLowerCase(), role: 'student' });
         if (!student) {
@@ -182,7 +182,7 @@ const searchStudentPayment = asyncErrorHandler(
 
         const studentId = student._id;
 
-        const paymentRecord = await Payment.findOne({ student: studentId, term, level });
+        const paymentRecord = await Payment.findOne({ student: studentId, term, level }).populate('student courses');
 
         if (!paymentRecord || paymentRecord.isPaid == false) {
             return res.status(200).json({
