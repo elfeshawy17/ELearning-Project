@@ -13,12 +13,16 @@ import { enrollmentRouter } from './src/modules/enrolments/enrollment.routes.js'
 import swaggerUi from 'swagger-ui-express';
 import swaggerFile from './swagger-output.json' with { type: 'json' };
 import paymentConfigRouter from './src/modules/paymentConfig/paymentConfig.routes.js';
+import paymentRouter from './src/modules/payment/payment.routes.js';
 
 
 const app = express();
 const port = process.env.SERVER_PORT;
 
 app.use(cors());
+
+app.use('/api/payment/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json());
 
 app.use('/api/users', userRouter)
@@ -29,6 +33,7 @@ app.use('/api/assignments', assignmentRouter)
 app.use('/api/submissions', submissionRouter)
 app.use('/api/enrollments', enrollmentRouter)
 app.use('/api/paymentConfig', paymentConfigRouter)
+app.use('/api/payment', paymentRouter)
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { swaggerOptions: { persistAuthorization: true } }));
 

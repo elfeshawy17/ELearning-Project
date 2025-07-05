@@ -9,7 +9,7 @@ const configValidationSchema = Joi.object({
             "any.required": "Hour rate is required"
         }),
 
-    term: Joi.string().valid("first", "second").required()
+    term: Joi.number().integer().required()
         .messages({
             "any.only": "Term must be either 'first' or 'second'",
             "any.required": "Term is required"

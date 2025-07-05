@@ -8,8 +8,7 @@ const configSchema = new Schema({
         min: 1
     },
     term: {
-        type: String,
-        enum: ["first", "second"],
+        type: Number, 
         required: true,
     }
 }, {

@@ -1,4 +1,4 @@
-import joi from 'joi';
+import Joi from 'joi';
 
 const objectId = Joi.string().regex(/^[0-9a-fA-F]{24}$/);
 
@@ -16,7 +16,7 @@ const paymentValidationSchema = Joi.object({
             "any.required": "Level is required"
         }),
 
-    term: Joi.string().valid("first", "second").required()
+        term: Joi.number().integer().required()
         .messages({
             "any.only": "Term must be either 'first' or 'second'",
             "any.required": "Term is required"

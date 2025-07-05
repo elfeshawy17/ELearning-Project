@@ -6,14 +6,17 @@ const paymentSchema = new Schema({
         ref: "User",
         required: true,
     },
+    orderId: {
+        type: String,
+        required: true,
+    },
     level: {
         type: Number,
         enum: [0, 1, 2, 3, 4, 5],
         required: true,
     },
     term: {
-        type: String,
-        enum: ["first", "second"],
+        type: Number, 
         required: true,
     },
     courses: [{

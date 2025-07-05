@@ -6,7 +6,7 @@ const setConfig = asyncErrorHandler(
     async (req, res) => {
         const { hourRate, term } = req.body;
         
-        const config = await Config.findOne();
+        let config = await Config.findOne();
 
         if (config) {
             config.hourRate = hourRate;
