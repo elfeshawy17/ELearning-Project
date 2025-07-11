@@ -42,10 +42,10 @@ export const addCourse = asyncErrorHandler(async(req,res,next)=>{
 
 export const getAllCourses = asyncErrorHandler(async(req,res,next)=>{
 
-    let pageNumber =req.query.page *1 || 1
-    if(pageNumber<1)pageNumber=1
-    let limit = 4
-    const skip =(parseInt(pageNumber-1))*limit
+    const pageNumber = req.query.page *1 || 1;
+    if (pageNumber < 1) pageNumber = 1;
+    const limit = req.query.limit || 4;
+    const skip = parseInt(pageNumber -1) * limit;
 
     let courses = await Course.find().skip(skip).limit(limit).populate('professor', 'name');
 
